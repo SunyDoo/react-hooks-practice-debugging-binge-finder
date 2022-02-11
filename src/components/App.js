@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid } from "semantic-ui-react";
-import Adapter from "../Adapter";
+// import Adapter from "../Adapter";
 import TVShowList from "./TVShowList";
 import Nav from "./Nav";
 import SelectedShowContainer from "./SelectedShowContainer";
@@ -13,7 +13,9 @@ function App() {
   const [filterByRating, setFilterByRating] = useState("");
 
   useEffect(() => {
-    Adapter.getShows().then((shows) => setShows(shows));
+    fetch("http://api.tvmaze.com/shows")
+    .then(res => res.json())
+    .then((shows) => setShows(shows));
   }, []);
 
   useEffect(() => {
@@ -25,23 +27,37 @@ function App() {
   }
 
   function handleFilter(e) {
-    e.target.value === "No Filter"
-      ? setFilterByRating("")
-      : setFilterByRating(e.target.value);
+    if (e.target.value === "No Filter"){
+       setFilterByRating("")
+    }else{ setFilterByRating(e.target.value)
+    };
   }
 
   function selectShow(show) {
-    Adapter.getShowEpisodes(show.id).then((episodes) => {
+    fetch(`http://api.tvmaze.com/shows/${show.id}/episodes`)
+    .then(res => res.json)
+    .then((episodes) => {
       setSelectedShow(show);
       setEpisodes(episodes);
+      console.log(episodes)
     });
   }
 
-  let displayShows = shows;
-  if (filterByRating) {
-    displayShows = displayShows.filter((s) => {
-      s.rating.average >= filterByRating;
-    });
+  // let displayShows = shows;
+  // if (filterByRating) {
+  //   displayShows = displayShows.filter((s) => {
+  //     (s.rating.average === filterByRating)
+  //   });
+  // }
+
+  let displayShows = () => {
+    if (filterByRating){
+      return shows.filter((s)=> {
+        return s.rating.average >= filterByRating
+      })
+    } else {
+      return shows
+    }
   }
 
   return (
@@ -56,7 +72,7 @@ function App() {
           {!!selectedShow ? (
             <SelectedShowContainer
               selectedShow={selectedShow}
-              allEpisodes={episodes}
+              episodes={episodes}
             />
           ) : (
             <div />
@@ -64,7 +80,7 @@ function App() {
         </Grid.Column>
         <Grid.Column width={11}>
           <TVShowList
-            shows={displayShows}
+            shows={displayShows()}
             selectShow={selectShow}
             searchTerm={searchTerm}
           />
