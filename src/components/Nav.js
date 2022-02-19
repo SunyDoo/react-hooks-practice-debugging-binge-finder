@@ -14,7 +14,7 @@ function Nav(props) {
           <h1>Tube Finder</h1>
         </Menu.Item>
         <Menu.Item position="right">
-          <Filter handleFilter={props.handleFilter} />
+          <Filter handleFilter={props.handleFilter} filterNumber={props.filterNumber} />
         </Menu.Item>
         <Menu.Item position="right">
           <Search handleSearch={props.handleSearch} search={props.search} />

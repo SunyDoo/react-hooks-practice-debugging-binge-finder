@@ -7,6 +7,7 @@ function Filter(props) {
       <select
         placeholder="Filter by average rating"
         onChange={props.handleFilter}
+        value={props.filterNumber}
       >
         <option>No Filter</option>
         <option value="1">1</option>

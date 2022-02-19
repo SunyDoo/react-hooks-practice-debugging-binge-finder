@@ -7,8 +7,9 @@ function TVShowList(props) {
     if (!!props.searchTerm) {
       props.shows.map((s) => {
         if (s.name.toLowerCase().includes(props.searchTerm)) {
-          <TVShow show={s} key={s.id} selectShow={props.selectShow} />;
-        }
+          return (
+          <TVShow show={s} key={s.id} selectShow={props.selectShow} />)
+        } else return null
       });
     }
     return props.shows.map((s) => (

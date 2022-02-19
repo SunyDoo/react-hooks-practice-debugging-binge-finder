@@ -12,6 +12,7 @@ function App() {
   const [episodes, setEpisodes] = useState([]);
   const [filterByRating, setFilterByRating] = useState("");
 
+
   useEffect(() => {
     fetch("http://api.tvmaze.com/shows")
     .then(res => res.json())
@@ -23,7 +24,7 @@ function App() {
   });
 
   function handleSearch(e) {
-    setSearchTerm(e.target.value.toLowerCase());
+    setSearchTerm(e);
   }
 
   function handleFilter(e) {
@@ -33,43 +34,38 @@ function App() {
     };
   }
 
+
   function selectShow(show) {
+    // console.log(show)
+    setSelectedShow(show);
     fetch(`http://api.tvmaze.com/shows/${show.id}/episodes`)
-    .then(res => res.json)
+    .then(res => res.json())
     .then((episodes) => {
-      setSelectedShow(show);
       setEpisodes(episodes);
-      console.log(episodes)
     });
   }
 
-  // let displayShows = shows;
-  // if (filterByRating) {
-  //   displayShows = displayShows.filter((s) => {
-  //     (s.rating.average === filterByRating)
-  //   });
-  // }
 
-  let displayShows = () => {
-    if (filterByRating){
-      return shows.filter((s)=> {
-        return s.rating.average >= filterByRating
-      })
+  const showsToDisplay = shows.filter((show) => {
+    if (searchTerm === "") {
+      return true;
     } else {
-      return shows
+      return show.name.toLowerCase().includes(searchTerm)
     }
-  }
+    
+  })
 
   return (
     <div>
       <Nav
+        filterNumber={filterByRating}
         handleFilter={handleFilter}
         handleSearch={handleSearch}
-        searchTerm={searchTerm}
+        search={searchTerm}
       />
       <Grid celled>
         <Grid.Column width={5}>
-          {!!selectedShow ? (
+          {selectedShow ? (
             <SelectedShowContainer
               selectedShow={selectedShow}
               episodes={episodes}
@@ -80,7 +76,11 @@ function App() {
         </Grid.Column>
         <Grid.Column width={11}>
           <TVShowList
-            shows={displayShows()}
+            shows={showsToDisplay.filter((show)=>{
+              if (filterByRating){
+                return show.rating.average >= filterByRating
+              } else return showsToDisplay
+            })}
             selectShow={selectShow}
             searchTerm={searchTerm}
           />
