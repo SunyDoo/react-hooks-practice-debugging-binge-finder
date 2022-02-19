@@ -30,11 +30,8 @@ function SelectedShowContainer(props) {
   };
 
   const episodesToDisplay = props.episodes.filter((e) => {
-    return e.season === selectedSeason
+    return e.season == selectedSeason
   })
-  
-console.log(episodesToDisplay)
-console.log(selectedSeason)
 
   function handleSelectionChange(season) {
     setSelectedSeason(season)
@@ -61,5 +58,3 @@ console.log(selectedSeason)
 }
 
 export default SelectedShowContainer;
-
-
